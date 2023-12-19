@@ -1,0 +1,26 @@
+baseURL: 'https://docs.kosli.com'
+languageCode: 'en-us'
+title: 'Kosli developer documentation'
+
+theme: "book"
+
+markup:
+  tableOfContents:
+    startLevel: 1
+    endLevel: 2
+  goldmark:
+    extensions:
+      typographer: false
+  # blackFriday:
+  #   smartDashes: false
+  # defaultMarkdownHandler: blackFriday
+
+Params:
+  BookSection: '/'
+  BookToC: true
+  default_social_thumb: /kosli-docs-logo-white.svg
+
+caches:
+  getjson:
+    dir: :cacheDir/:project
+    maxAge: 30s
