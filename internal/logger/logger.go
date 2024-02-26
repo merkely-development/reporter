@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 )
 
 type Logger struct {
@@ -53,7 +54,15 @@ func (l *Logger) Warning(format string, v ...interface{}) {
 }
 
 func (l *Logger) Error(format string, v ...interface{}) {
-	format = fmt.Sprintf("Error: %s\n", format)
+	var input = "kosli"
+	for _, arg := range os.Args[1:] {
+		if !strings.HasPrefix(arg, "--") {
+			input += " "
+			input += arg
+		}
+	}
+	l.errLog.Printf("Error: %s ...\n", input)
+	format = fmt.Sprintf("%s\n", format)
 	l.errLog.Fatalf(format, v...)
 }
 
