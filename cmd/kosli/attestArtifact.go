@@ -40,7 +40,7 @@ type AttestArtifactPayload struct {
 const attestArtifactShortDesc = `Attest an artifact creation to a Kosli flow.  `
 
 const attestArtifactLongDesc = attestArtifactShortDesc + `
-` + fingerprintDesc
+` + requiredFingerprintDesc
 
 const attestArtifactExample = `
 # Attest that a file type artifact has been created, and let Kosli calculate its fingerprint

@@ -23,7 +23,7 @@ type attestGenericOptions struct {
 const attestGenericShortDesc = `Report a generic attestation to an artifact or a trail in a Kosli flow.  `
 
 const attestGenericLongDesc = attestGenericShortDesc + `
-` + fingerprintDesc
+` + optionalFingerprintDesc
 
 const attestGenericExample = `
 # report a generic attestation about a pre-built docker artifact (kosli calculates the fingerprint):

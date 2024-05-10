@@ -25,7 +25,7 @@ type attestJunitOptions struct {
 const attestJunitShortDesc = `Report a junit attestation to an artifact or a trail in a Kosli flow.  `
 
 const attestJunitLongDesc = attestJunitShortDesc + `
-` + fingerprintDesc
+` + optionalFingerprintDesc
 
 const attestJunitExample = `
 # report a junit attestation about a pre-built docker artifact (kosli calculates the fingerprint):

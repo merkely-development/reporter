@@ -40,8 +40,11 @@ const (
 	credentialsStoreKeySecretName = "kosli-encryption-key"
 
 	// the following constants are used in the docs/help
-	fingerprintDesc = "The artifact SHA256 fingerprint is calculated (based on the ^--artifact-type^ flag) or can be provided directly (with the ^--fingerprint^ flag)."
-	awsAuthDesc     = `
+	fingerprintDesc         = "The artifact SHA256 fingerprint can be calculated (based on the ^--artifact-type^ flag) or provided directly (with the ^--fingerprint^ flag)."
+	requiredFingerprintDesc = "The artifact SHA256 fingerprint can be calculated (based on the ^--artifact-type^ flag) or provided directly (with the ^--fingerprint^ flag)."
+	optionalFingerprintDesc = "If the attestation is attached to an artifact, the artifact SHA256 fingerprint can be calculated (based on the ^--artifact-type^ flag) or provided directly (with the ^--fingerprint^ flag)."
+
+	awsAuthDesc = `
 
 To authenticate to AWS, you can either:  
   1) provide the AWS static credentials via flags or by exporting the equivalent KOSLI env vars (e.g. KOSLI_AWS_KEY_ID)  
@@ -68,10 +71,10 @@ The service principal needs to have the following permissions:
 	orgFlag                              = "The Kosli organization."
 	hostFlag                             = "[defaulted] The Kosli endpoint."
 	httpProxyFlag                        = "[optional] The HTTP proxy URL including protocol and port number. e.g. 'http://proxy-server-ip:proxy-port'"
-	dryRunFlag                           = "[optional] Run in dry-run mode. When enabled, no data is sent to Kosli and the CLI exits with 0 exit code regardless of any errors."
+	dryRunFlag                           = "[optional] Run in dry-run mode. No data is sent to Kosli and the CLI exits with 0 exit code regardless of any errors. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
 	maxAPIRetryFlag                      = "[defaulted] How many times should API calls be retried when the API host is not reachable."
 	configFileFlag                       = "[optional] The Kosli config file path."
-	debugFlag                            = "[optional] Print debug logs to stdout. A boolean flag https://docs.kosli.com/faq/#boolean-flags (default false)"
+	debugFlag                            = "[optional] Write debug logs to stdout. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
 	artifactTypeFlag                     = "[conditional] The type of the artifact to calculate its SHA256 fingerprint. One of: [docker, file, dir]. Only required if you don't specify '--fingerprint'."
 	flowNameFlag                         = "The Kosli flow name."
 	trailNameFlag                        = "The Kosli trail name."
@@ -115,7 +118,7 @@ The service principal needs to have the following permissions:
 	evidenceBuildUrlFlag                 = "The url of CI pipeline that generated the evidence. (defaulted in some CIs: https://docs.kosli.com/ci-defaults )."
 	buildUrlFlag                         = "The url of CI pipeline that built the artifact. (defaulted in some CIs: https://docs.kosli.com/ci-defaults )."
 	commitUrlFlag                        = "The url for the git commit that created the artifact. (defaulted in some CIs: https://docs.kosli.com/ci-defaults )."
-	evidenceCompliantFlag                = "[defaulted] Whether the evidence is compliant or not. A boolean flag https://docs.kosli.com/faq/#boolean-flags"
+	evidenceCompliantFlag                = "[defaulted] Whether the evidence is compliant or not. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
 	evidenceTypeFlag                     = "The type of evidence being reported."
 	bbUsernameFlag                       = "Bitbucket username."
 	bbPasswordFlag                       = "Bitbucket App password. See https://developer.atlassian.com/cloud/bitbucket/rest/intro/#authentication for more details."
@@ -181,10 +184,10 @@ The service principal needs to have the following permissions:
 	attestationCommitFlag                = "[optional] The git commit associated to the attestation. (defaulted in some CIs: https://docs.kosli.com/ci-defaults )."
 	attestationOriginUrlFlag             = "[optional] The url pointing to where the attestation came from or is related. (defaulted to the CI url in some CIs: https://docs.kosli.com/ci-defaults )."
 	attestationNameFlag                  = "The name of the attestation as declared in the flow or trail yaml template."
-	attestationCompliantFlag             = "[defaulted] Whether the attestation is compliant or not. A boolean flag https://docs.kosli.com/faq/#boolean-flags"
+	attestationCompliantFlag             = "[defaulted] Whether the attestation is compliant or not. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
 	attestationRepoRootFlag              = "[defaulted] The directory where the source git repository is available. Only used if --commit is used."
-	uploadJunitResultsFlag               = "[defaulted] Whether to upload the provided Junit results directory as an attachment to Kosli or not."
-	uploadSnykResultsFlag                = "[defaulted] Whether to upload the provided Snyk results file as an attachment to Kosli or not."
+	uploadJunitResultsFlag               = "[defaulted] Whether to upload the provided Junit results directory as an attachment to Kosli or not. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
+	uploadSnykResultsFlag                = "[defaulted] Whether to upload the provided Snyk results file as an attachment to Kosli or not. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags)."
 	attestationAssertFlag                = "[optional] Exit with non-zero code if the attestation is non-compliant"
 	beginTrailCommitFlag                 = "[defaulted] The git commit from which the trail is begun. (defaulted in some CIs: https://docs.kosli.com/ci-defaults, otherwise defaults to HEAD )."
 	attachmentsFlag                      = "[optional] The comma-separated list of paths of attachments for the reported attestation. Attachments can be files or directories. All attachments are compressed and uploaded to Kosli's evidence vault."
