@@ -1,10 +1,10 @@
 ---
-title: "kosli attest snyk"
+title: "snyk"
 beta: false
 deprecated: false
 ---
 
-# kosli attest snyk
+# snyk
 
 ## Synopsis
 
@@ -20,7 +20,7 @@ You can disable that by setting `--upload-results=false`
 If the attestation is attached to an artifact, the artifact SHA256 fingerprint can be calculated (based on the `--artifact-type` flag) or provided directly (with the `--fingerprint` flag).
 
 ```shell
-kosli attest snyk [IMAGE-NAME | FILE-PATH | DIR-PATH] [flags]
+snyk [IMAGE-NAME | FILE-PATH | DIR-PATH] [flags]
 ```
 
 ## Flags
@@ -49,26 +49,6 @@ kosli attest snyk [IMAGE-NAME | FILE-PATH | DIR-PATH] [flags]
 |        --upload-results  |  [defaulted] Whether to upload the provided Snyk results file as an attachment to Kosli or not. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags). (default true)  |
 |    -u, --user-data string  |  [optional] The path to a JSON file containing additional data you would like to attach to the attestation.  |
 
-
-## Flags inherited from parent commands
-| Flag | Description |
-| :--- | :--- |
-|    -a, --api-token string  |  The Kosli API token.  |
-|    -c, --config-file string  |  [optional] The Kosli config file path. (default "kosli")  |
-|        --debug  |  [optional] Write debug logs to stdout. A [boolean flag](https://docs.kosli.com/faq/#boolean-flags).  |
-|    -H, --host string  |  [defaulted] The Kosli endpoint. (default "https://app.kosli.com")  |
-|        --http-proxy string  |  [optional] The HTTP proxy URL including protocol and port number. e.g. 'http://proxy-server-ip:proxy-port'  |
-|    -r, --max-api-retries int  |  [defaulted] How many times should API calls be retried when the API host is not reachable. (default 3)  |
-|        --org string  |  The Kosli organization.  |
-
-
-## Live Examples in different CI systems
-
-{{< tabs "live-examples" "col-no-wrap" >}}{{< tab "GitHub" >}}View an example of the `kosli attest snyk` command in GitHub.
-
-In [this YAML file](https://app.kosli.com/api/v2/livedocs/cyber-dojo/yaml?ci=github&command=kosli+attest+snyk), which created [this Kosli Event](https://app.kosli.com/api/v2/livedocs/cyber-dojo/event?ci=github&command=kosli+attest+snyk).{{< /tab >}}{{< tab "GitLab" >}}View an example of the `kosli attest snyk` command in GitLab.
-
-In [this YAML file](https://app.kosli.com/api/v2/livedocs/cyber-dojo/yaml?ci=gitlab&command=kosli+attest+snyk), which created [this Kosli Event](https://app.kosli.com/api/v2/livedocs/cyber-dojo/event?ci=gitlab&command=kosli+attest+snyk).{{< /tab >}}{{< /tabs >}}
 
 ## Examples Use Cases
 
