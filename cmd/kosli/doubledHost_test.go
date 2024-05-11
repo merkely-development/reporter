@@ -140,7 +140,7 @@ func (suite *DoubledHostTestSuite) TestRunDoubledHost() {
 		assert.Equal(suite.T(), t.err, err, fmt.Sprintf("TestRunDoubleHost: %s\n\texpected: '%v'\n\t--actual: '%v'\n", t.name, t.err, err))
 
 		lines := strings.Split(output, "\n")
-		d := diff(t.stdOut, lines)
+		d := DiffLines(t.stdOut, lines)
 		assert.Equal(suite.T(), "", d, fmt.Sprintf("TestRunDoubleHost: %s\n%s\n", t.name, d))
 	}
 }
@@ -183,54 +183,4 @@ func HelpStatusLines() []string {
 		"      --org string            The Kosli organization.",
 		"",
 	}
-}
-
-func diff(expect []string, actual []string) string {
-	if len(expect) != len(actual) {
-		return fmt.Sprintf("len(expect)==%v, len(actual)==%v\n", len(expect), len(actual))
-	}
-	for i := 0; i < len(expect); i++ {
-		e := expect[i]
-		a := actual[i]
-		d := diffLine(i, e, a)
-		if d != "" {
-			return d
-		}
-	}
-	return ""
-}
-
-func diffLine(n int, expect string, actual string) string {
-	m := max(len(expect), len(actual))
-	for i := 0; i < m; i++ {
-		e := charAt(expect, i)
-		a := charAt(actual, i)
-		if e != a {
-			msg := []string{
-				fmt.Sprintf("line: %v", n),
-				fmt.Sprintf("expect: '%v'", expect),
-				fmt.Sprintf("actual: '%v'", actual),
-				fmt.Sprintf("len(expect): %v", len(expect)),
-				fmt.Sprintf("len(actual): %v", len(actual)),
-				fmt.Sprintf("expect[%v]: %v", i, e),
-				fmt.Sprintf("actual[%v]: %v", i, a),
-			}
-			return strings.Join(msg, "\n")
-		}
-	}
-	return ""
-}
-
-func charAt(s string, n int) string {
-	if n >= len(s) {
-		return "nil"
-	}
-	c := s[n]
-	if c == '\t' {
-		return "TAB"
-	}
-	if c == '\n' {
-		return "NL"
-	}
-	return fmt.Sprintf("%v", c)
 }

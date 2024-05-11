@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -121,7 +122,10 @@ func compareFileBytes(actual, expected []byte) error {
 	expected = normalize(expected)
 
 	if !bytes.Equal(actual, expected) {
-		return errors.Errorf("actual does not match expected")
+		actualLines := strings.Split(string(actual), "\n")
+		expectedLines := strings.Split(string(expected), "\n")
+		diff := DiffLines(expectedLines, actualLines)
+		return errors.Errorf("actual does not match expected:\n%s", diff)
 	}
 	return nil
 }
@@ -323,4 +327,60 @@ func UnSetEnvVars(envVars map[string]string, t *testing.T) {
 		err := os.Unsetenv(key)
 		require.NoErrorf(t, err, "error unsetting env variable %s", key)
 	}
+}
+
+func DiffLines(expect []string, actual []string) string {
+	m := max(len(expect), len(actual))
+	for i := 0; i < m; i++ {
+		e := lineAt(expect, i)
+		a := lineAt(actual, i)
+		d := diffLine(i, e, a)
+		if d != "" {
+			return d
+		}
+	}
+	return ""
+}
+
+func diffLine(n int, expect string, actual string) string {
+	m := max(len(expect), len(actual))
+	for i := 0; i < m; i++ {
+		e := charAt(expect, i)
+		a := charAt(actual, i)
+		if e != a {
+			msg := []string{
+				fmt.Sprintf("line: %v", n+1),
+				fmt.Sprintf("expect: '%v'", expect),
+				fmt.Sprintf("actual: '%v'", actual),
+				fmt.Sprintf("len(expect): %v", len(expect)),
+				fmt.Sprintf("len(actual): %v", len(actual)),
+				fmt.Sprintf("expect[%v]: %v", i, e),
+				fmt.Sprintf("actual[%v]: %v", i, a),
+			}
+			return strings.Join(msg, "\n")
+		}
+	}
+	return ""
+}
+
+func lineAt(s []string, n int) string {
+	if n >= len(s) {
+		return fmt.Sprintf("No line %v, max=%v\n", n, len(s))
+	} else {
+		return s[n]
+	}
+}
+
+func charAt(s string, n int) string {
+	if n >= len(s) {
+		return "nil"
+	}
+	c := s[n]
+	if c == '\t' {
+		return "TAB"
+	}
+	if c == '\n' {
+		return "NL"
+	}
+	return fmt.Sprintf("%v", c)
 }
