@@ -16,6 +16,10 @@ type DocsCommandTestSuite struct {
 	suite.Suite
 }
 
+// This tests the built-in docs output of a single command (attest snyk)
+// It does not test any of the extra "live-docs content generated in docs.go
+// If this fails and you want the actual to become the expected,
+// comment out the defer call, print actualFile so you can see its path
 func (suite *DocsCommandTestSuite) TestDocsCmd() {
 	global = &GlobalOpts{}
 	tempDirName, err := os.MkdirTemp("", "generatedDocs")
