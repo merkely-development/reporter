@@ -133,13 +133,13 @@ function report_kosli_attest_pull_request
 
     /work/r1/cli/kosli attest pullrequest github \
         --name=commit_${short_commit_sha} \
-        --assert \
+        --require-different-approver \
         --commit=${commit_sha} \
         --flow=${commit_pull_request_flow} \
         --trail=${trail_name} \
         --repository=https://github.com/kosli-dev/cli \
         --github-token ${GITHUB_TOKEN} \
-	    --github-org kosli-dev --debug --dry-run
+	    --github-org kosli-dev --debug # --dry-run
 
 }
 
@@ -152,10 +152,12 @@ function get_commit_and_pr_data_and_report_to_kosli
     local trail_name=$1; shift
     local commits compliant
 
-    base_commit=b3c6cf0422e484b327e393f58af1ee089b1e98d2
+    # base_commit=b3c6cf0422e484b327e393f58af1ee089b1e98d2
+    # proposed_commit=b4399b83f76d1e9fea9f96db54bafc1fdb850552
 
     commits=($(gh api repos/:owner/:repo/compare/${base_commit}...${proposed_commit} -q '.commits[].sha')) \
         || die "Failed to get list of commits between '${base_commit}' and '${proposed_commit}' with: gh api"
+
     for commit_sha in "${commits[@]}"; do
         report_kosli_attest_pull_request ${commit_sha} ${commit_pull_request_flow} ${trail_name}
         # local short_commit_sha=${commit_sha:0:7}
