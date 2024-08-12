@@ -96,8 +96,9 @@ func (o *pullRequestArtifactOptions) run(out io.Writer, args []string) error {
 
 type PRAttestationPayload struct {
 	*CommonAttestationPayload
-	GitProvider  string              `json:"git_provider"`
-	PullRequests []*types.PREvidence `json:"pull_requests"`
+	GitProvider              string              `json:"git_provider"`
+	PullRequests             []*types.PREvidence `json:"pull_requests"`
+	RequireDifferentApprover bool                `json:"require_different_approver"`
 }
 
 type attestPROptions struct {

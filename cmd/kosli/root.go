@@ -147,6 +147,7 @@ The service principal needs to have the following permissions:
 	githubTokenFlag                      = "Github token."
 	githubOrgFlag                        = "Github organization. (defaulted if you are running in GitHub Actions: https://docs.kosli.com/ci-defaults )."
 	githubBaseURLFlag                    = "[optional] GitHub base URL (only needed for GitHub Enterprise installations)."
+	githubRequireDifferentApproverFlag   = "[defaulted] Server will set attestation to non-compliant if the PR has not been approved by any one else than the PR-author. (default: false)"
 	gitlabTokenFlag                      = "Gitlab token."
 	gitlabOrgFlag                        = "Gitlab organization. (defaulted if you are running in Gitlab Pipelines: https://docs.kosli.com/ci-defaults )."
 	gitlabBaseURLFlag                    = "[optional] Gitlab base URL (only needed for on-prem Gitlab installations)."
