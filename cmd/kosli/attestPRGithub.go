@@ -151,7 +151,7 @@ func newAttestGithubPRCmd(out io.Writer) *cobra.Command {
 	addAttestationFlags(cmd, o.CommonAttestationOptions, o.payload.CommonAttestationPayload, ci)
 	addGithubFlags(cmd, githubFlagsValues, ci)
 	cmd.Flags().BoolVar(&o.assert, "assert", false, assertPREvidenceFlag)
-	cmd.Flags().BoolVar(&o.payload.RequireDifferentApprover, "require-different-approver", false, githubRequireDifferentApproverFlag)
+	cmd.Flags().BoolVar(&o.payload.RequireApproverNotCommitter, "require-approver-not-committer", false, githubRequireApproverNotCommitterFlag)
 
 	err := RequireFlags(cmd, []string{"flow", "trail", "name",
 		"github-token", "github-org", "commit", "repository"})
