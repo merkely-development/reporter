@@ -133,7 +133,7 @@ function report_kosli_attest_pull_request
 
     /work/r1/cli/kosli attest pullrequest github \
         --name=commit_${short_commit_sha} \
-        --require-different-approver \
+        --require-approver-not-committer \
         --commit=${commit_sha} \
         --flow=${commit_pull_request_flow} \
         --trail=${trail_name} \
