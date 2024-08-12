@@ -123,6 +123,27 @@ function get_commit_and_pull_request
     echo ${compliant}
 }
 
+
+function report_kosli_attest_pull_request
+{
+    local commit_sha=$1; shift
+    local commit_pull_request_flow=$1; shift
+    local trail_name=$1; shift
+    local short_commit_sha=${commit_sha:0:7}
+
+    /work/r1/cli/kosli attest pullrequest github \
+        --name=commit_${short_commit_sha} \
+        --assert \
+        --commit=${commit_sha} \
+        --flow=${commit_pull_request_flow} \
+        --trail=${trail_name} \
+        --repository=https://github.com/kosli-dev/cli \
+        --github-token ${GITHUB_TOKEN} \
+	    --github-org kosli-dev --debug --dry-run
+
+}
+
+
 function get_commit_and_pr_data_and_report_to_kosli
 {
     local base_commit=$1; shift
@@ -131,20 +152,23 @@ function get_commit_and_pr_data_and_report_to_kosli
     local trail_name=$1; shift
     local commits compliant
 
+    base_commit=b3c6cf0422e484b327e393f58af1ee089b1e98d2
+
     commits=($(gh api repos/:owner/:repo/compare/${base_commit}...${proposed_commit} -q '.commits[].sha')) \
         || die "Failed to get list of commits between '${base_commit}' and '${proposed_commit}' with: gh api"
     for commit_sha in "${commits[@]}"; do
-        local short_commit_sha=${commit_sha:0:7}
-        local file_name="commit_pr_${short_commit_sha}.json"
-        compliant=$(get_commit_and_pull_request ${commit_sha} ${file_name})
-        kosli attest generic \
-            --name=commit_${short_commit_sha} \
-            --compliant=${compliant} \
-            --commit=${commit_sha} \
-            --attachments=${file_name} \
-            --flow=${commit_pull_request_flow} \
-            --trail=${trail_name}
-        rm ${file_name}
+        report_kosli_attest_pull_request ${commit_sha} ${commit_pull_request_flow} ${trail_name}
+        # local short_commit_sha=${commit_sha:0:7}
+        # local file_name="commit_pr_${short_commit_sha}.json"
+        # compliant=$(get_commit_and_pull_request ${commit_sha} ${file_name})
+        # kosli attest generic \
+        #     --name=commit_${short_commit_sha} \
+        #     --compliant=${compliant} \
+        #     --commit=${commit_sha} \
+        #     --attachments=${file_name} \
+        #     --flow=${commit_pull_request_flow} \
+        #     --trail=${trail_name}
+        # rm ${file_name}
     done
 }
 

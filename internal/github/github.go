@@ -80,6 +80,9 @@ func (c *GithubConfig) newPRGithubEvidence(pr *gh.PullRequest) (*types.PREvidenc
 		URL:         pr.GetHTMLURL(),
 		MergeCommit: pr.GetMergeCommitSHA(),
 		State:       pr.GetState(),
+		Author: types.PRAuthor{
+			Login: pr.GetUser().GetLogin(),
+		},
 	}
 	approvers, err := c.GetPullRequestApprovers(pr.GetNumber())
 	if err != nil {
