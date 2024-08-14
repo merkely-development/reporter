@@ -74,54 +74,54 @@ function check_arguments
 }
 
 
-function get_commit_and_pull_request
-{
-    local commit_sha=$1; shift
-    local result_file=$1; shift
+# function get_commit_and_pull_request
+# {
+#     local commit_sha=$1; shift
+#     local result_file=$1; shift
 
-    pr_data=$(gh pr list --search "${commit_sha}" --state merged --json author,reviews,mergeCommit,mergedAt,reviewDecision,url) \
-        || die "Failed to get pull request with: gh pr list --search"
-    commit_data=$(gh search commits --hash "${commit_sha}" --json author) \
-        || die "Failed to get commit with: gh search commits"
+#     pr_data=$(gh pr list --search "${commit_sha}" --state merged --json author,reviews,mergeCommit,mergedAt,reviewDecision,url) \
+#         || die "Failed to get pull request with: gh pr list --search"
+#     commit_data=$(gh search commits --hash "${commit_sha}" --json author) \
+#         || die "Failed to get commit with: gh search commits"
 
-    combined_data=$(jq -n --arg commitsha "$commit_sha" --argjson commit "$commit_data" --argjson pr "$pr_data" \
-      '{commit_sha: $commitsha, commit: $commit[0], pull_request: $pr[0]}')
+#     combined_data=$(jq -n --arg commitsha "$commit_sha" --argjson commit "$commit_data" --argjson pr "$pr_data" \
+#       '{commit_sha: $commitsha, commit: $commit[0], pull_request: $pr[0]}')
 
-    # Check for missing reviews or if that list is empty
-    reviews=$(echo "${pr_data}" | jq '.[0].reviews')
-    github_review_decision=$(echo "${pr_data}" | jq '.[0].reviewDecision')
-    local compliant="false"
-    if [ "$reviews" = "null" ]; then
-        combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "no pull-request"}')
-    elif [ -z "$reviews" -o "$reviews" = "[]" ]; then
-        combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "no reviewers"}')
-    elif [ "${github_review_decision}" != '"APPROVED"' ]; then
-        combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "pull-request not approved"}')
-    else
-        # Loop over reviews and check that at least one approver is not the same as committer
-        pr_author=$(echo "${pr_data}" | jq '.[0].author.login')
-        reviews_length=$(echo "${pr_data}" | jq '.[0].reviews | length')
-        for i in $(seq 0 $(( reviews_length - 1 )))
-        do
-            review=$(echo "${pr_data}" | jq ".[0].reviews[$i]")
-            state=$(echo "$review" | jq ".state")
-            review_author=$(echo "$review" | jq ".author.login")
-            if [ "$state" = '"APPROVED"' -a "${review_author}" != "${pr_author}" ]; then
-                compliant="true"
-            fi
-        done
+#     # Check for missing reviews or if that list is empty
+#     reviews=$(echo "${pr_data}" | jq '.[0].reviews')
+#     github_review_decision=$(echo "${pr_data}" | jq '.[0].reviewDecision')
+#     local compliant="false"
+#     if [ "$reviews" = "null" ]; then
+#         combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "no pull-request"}')
+#     elif [ -z "$reviews" -o "$reviews" = "[]" ]; then
+#         combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "no reviewers"}')
+#     elif [ "${github_review_decision}" != '"APPROVED"' ]; then
+#         combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "pull-request not approved"}')
+#     else
+#         # Loop over reviews and check that at least one approver is not the same as committer
+#         pr_author=$(echo "${pr_data}" | jq '.[0].author.login')
+#         reviews_length=$(echo "${pr_data}" | jq '.[0].reviews | length')
+#         for i in $(seq 0 $(( reviews_length - 1 )))
+#         do
+#             review=$(echo "${pr_data}" | jq ".[0].reviews[$i]")
+#             state=$(echo "$review" | jq ".state")
+#             review_author=$(echo "$review" | jq ".author.login")
+#             if [ "$state" = '"APPROVED"' -a "${review_author}" != "${pr_author}" ]; then
+#                 compliant="true"
+#             fi
+#         done
 
-        if [ "${compliant}" == "false" ]; then
-            combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "committer and approver are the same person"}')
-        fi
-    fi
+#         if [ "${compliant}" == "false" ]; then
+#             combined_data=$(echo "${combined_data}" | jq '. += {"reason_for_non_compliance": "committer and approver are the same person"}')
+#         fi
+#     fi
 
-    # Make sure that true/false are not quoted
-    combined_data=$(echo "${combined_data}" | jq ". += {\"compliant\": $compliant}")
-    echo "${combined_data}" > ${result_file}
+#     # Make sure that true/false are not quoted
+#     combined_data=$(echo "${combined_data}" | jq ". += {\"compliant\": $compliant}")
+#     echo "${combined_data}" > ${result_file}
 
-    echo ${compliant}
-}
+#     echo ${compliant}
+# }
 
 
 function report_kosli_attest_pull_request
@@ -131,9 +131,10 @@ function report_kosli_attest_pull_request
     local trail_name=$1; shift
     local short_commit_sha=${commit_sha:0:7}
 
+    # USE hard coded local kosli for now This should not be an absolute path
     /work/r1/cli/kosli attest pullrequest github \
         --name=commit_${short_commit_sha} \
-        --require-approver-not-committer \
+        --require-approver-not-author \
         --commit=${commit_sha} \
         --flow=${commit_pull_request_flow} \
         --trail=${trail_name} \
