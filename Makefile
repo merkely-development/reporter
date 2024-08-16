@@ -1,6 +1,8 @@
 export CGO_ENABLED=0
 export GO111MODULE=on
 
+ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+
 LDFLAGS := -w -s
 
 GIT_COMMIT = $(shell git rev-parse HEAD)
@@ -152,3 +154,6 @@ release:
 check-links: 
 	@cd docs.kosli.com && hugo --minify
 	@docker run -v ${PWD}:/test --rm wjdp/htmltest -c .htmltest.yml -l 1
+
+test_system:
+	${ROOT_DIR}/test/system/run_all.sh
