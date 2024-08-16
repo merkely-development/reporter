@@ -72,10 +72,10 @@ ensure_gotestsum:
 	@go install gotest.tools/gotestsum@latest
 
 test_setup: ensure_gotestsum
-	./bin/reset-or-start-server.sh
+	./bin/reset-or-start-server.sh false
 
 test_setup_restart_server: ensure_gotestsum
-	./bin/reset-or-start-server.sh force
+	./bin/reset-or-start-server.sh true
 
 test_integration: deps vet ensure_network test_setup ## Run tests except the too slow ones
 	@mv ~/.kosli.yml ~/.kosli-renamed.yml || true
@@ -156,4 +156,5 @@ check-links:
 	@docker run -v ${PWD}:/test --rm wjdp/htmltest -c .htmltest.yml -l 1
 
 test_system:
+	./bin/reset-or-start-system-server.sh
 	${ROOT_DIR}/test/system/run_all.sh
