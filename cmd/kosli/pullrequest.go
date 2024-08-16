@@ -127,6 +127,19 @@ func (o *attestPROptions) run(args []string) error {
 
 	o.payload.PullRequests = pullRequestsEvidence
 
+	if o.payload.RequireApproverNotAuthor {
+		var compliant = false
+		for _, approver := range pullRequestsEvidence[0].Approvers {
+			if approver != pullRequestsEvidence[0].Author.Login {
+				compliant = true
+			}
+		}
+		o.payload.PullRequests[0].Compliant = &compliant
+		if !compliant {
+			o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
+		}
+	}
+
 	label := ""
 	o.payload.GitProvider, label = getGitProviderAndLabel(o.retriever)
 
