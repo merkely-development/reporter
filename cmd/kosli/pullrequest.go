@@ -98,6 +98,7 @@ type PRAttestationPayload struct {
 	*CommonAttestationPayload
 	GitProvider              string              `json:"git_provider"`
 	PullRequests             []*types.PREvidence `json:"pull_requests"`
+	ReasonForNonCompliance   string              `json:"reason_for_non_compliance,omitempty"`
 	RequireApproverNotAuthor bool                `json:"require_approver_not_author"`
 }
 
@@ -129,14 +130,18 @@ func (o *attestPROptions) run(args []string) error {
 
 	if o.payload.RequireApproverNotAuthor {
 		var compliant = false
-		for _, approver := range pullRequestsEvidence[0].Approvers {
-			if approver != pullRequestsEvidence[0].Author.Login {
-				compliant = true
+		if len(pullRequestsEvidence) == 0 {
+			o.payload.ReasonForNonCompliance = "No pull-request"
+		} else {
+			for _, approver := range pullRequestsEvidence[0].Approvers {
+				if approver != pullRequestsEvidence[0].Author.Login {
+					compliant = true
+				}
 			}
-		}
-		o.payload.PullRequests[0].Compliant = &compliant
-		if !compliant {
-			o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
+			o.payload.PullRequests[0].Compliant = &compliant
+			if !compliant {
+				o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
+			}
 		}
 	}
 
