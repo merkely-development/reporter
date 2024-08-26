@@ -96,10 +96,10 @@ func (o *pullRequestArtifactOptions) run(out io.Writer, args []string) error {
 
 type PRAttestationPayload struct {
 	*CommonAttestationPayload
-	GitProvider              string              `json:"git_provider"`
-	PullRequests             []*types.PREvidence `json:"pull_requests"`
-	ReasonForNonCompliance   string              `json:"reason_for_non_compliance,omitempty"`
-	RequireApproverNotAuthor bool                `json:"require_approver_not_author"`
+	GitProvider  string              `json:"git_provider"`
+	PullRequests []*types.PREvidence `json:"pull_requests"`
+	// ReasonForNonCompliance   string              `json:"reason_for_non_compliance,omitempty"`
+	RequireApproverNotAuthor bool `json:"require_approver_not_author"`
 }
 
 type attestPROptions struct {
@@ -128,27 +128,27 @@ func (o *attestPROptions) run(args []string) error {
 
 	o.payload.PullRequests = pullRequestsEvidence
 
-	if o.payload.RequireApproverNotAuthor {
-		var compliant = false
-		if len(pullRequestsEvidence) == 0 {
-			o.payload.ReasonForNonCompliance = "No pull-request"
-		} else {
-			approvers := pullRequestsEvidence[0].Approvers
-			if len(approvers) == 0 {
-				o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"No approver"}
-			} else {
-				for _, approver := range approvers {
-					if approver != pullRequestsEvidence[0].Author.Login {
-						compliant = true
-					}
-				}
-				if !compliant {
-					o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
-				}
-			}
-			o.payload.PullRequests[0].Compliant = &compliant
-		}
-	}
+	// if o.payload.RequireApproverNotAuthor {
+	// 	var compliant = false
+	// 	if len(pullRequestsEvidence) == 0 {
+	// 		o.payload.ReasonForNonCompliance = "No pull-request"
+	// 	} else {
+	// 		approvers := pullRequestsEvidence[0].Approvers
+	// 		if len(approvers) == 0 {
+	// 			o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"No approver"}
+	// 		} else {
+	// 			for _, approver := range approvers {
+	// 				if approver != pullRequestsEvidence[0].Author {
+	// 					compliant = true
+	// 				}
+	// 			}
+	// 			if !compliant {
+	// 				o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
+	// 			}
+	// 		}
+	// 		o.payload.PullRequests[0].Compliant = &compliant
+	// 	}
+	// }
 
 	label := ""
 	o.payload.GitProvider, label = getGitProviderAndLabel(o.retriever)
