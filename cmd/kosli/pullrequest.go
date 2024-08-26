@@ -133,15 +133,20 @@ func (o *attestPROptions) run(args []string) error {
 		if len(pullRequestsEvidence) == 0 {
 			o.payload.ReasonForNonCompliance = "No pull-request"
 		} else {
-			for _, approver := range pullRequestsEvidence[0].Approvers {
-				if approver != pullRequestsEvidence[0].Author.Login {
-					compliant = true
+			approvers := pullRequestsEvidence[0].Approvers
+			if len(approvers) == 0 {
+				o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"No approver"}
+			} else {
+				for _, approver := range approvers {
+					if approver != pullRequestsEvidence[0].Author.Login {
+						compliant = true
+					}
+				}
+				if !compliant {
+					o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
 				}
 			}
 			o.payload.PullRequests[0].Compliant = &compliant
-			if !compliant {
-				o.payload.PullRequests[0].ReasonsForNonCompliance = []string{"Approver is the author"}
-			}
 		}
 	}
 
