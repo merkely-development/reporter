@@ -53,41 +53,57 @@ jobs:
       pr_github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
-  test:
+  never-alone-trail:
     needs: [pre-build, init-kosli]
-    uses: ./.github/workflows/test.yml
+    uses: ./.github/workflows/never_alone_trail.yml
     with:
-      AWS_ACCOUNT_ID: 772819027869
-      AWS_REGION: eu-central-1
-      FLOW_NAME: cli
-      TRAIL_NAME: ${{ needs.pre-build.outputs.trail_name }}
+      FLOW_NAME: test-cli-release-never-alone
+      TRAIL_NAME: v0.0.100
+      SOURCE_FLOW_NAME: cli
+      ATTESTATION_NAME: never-alone-data
+      PARENT_FLOW_NAME: test-cli-release
+      PARENT_TRAIL_NAME: v0.0.100
       KOSLI_ORG: kosli-public
     secrets:
-      github_access_token: ${{ secrets.KOSLI_GITHUB_TOKEN }}
-      gitlab_access_token: ${{ secrets.KOSLI_GITLAB_TOKEN }}
-      azure_access_token: ${{ secrets.KOSLI_AZURE_TOKEN }}
-      azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-      azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-      bitbucket_password: ${{ secrets.KOSLI_BITBUCKET_PASSWORD }}
-      jira_api_token: ${{ secrets.KOSLI_JIRA_API_TOKEN }}
-      slack_webhook: ${{ secrets.MERKELY_SLACK_CI_FAILURES_WEBHOOK }}
-      slack_channel: ${{ secrets.MERKELY_SLACK_CI_FAILURES_CHANNEL }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
       kosli_api_token: ${{ secrets.KOSLI_API_TOKEN }}
+      pr_github_token: ${{ secrets.GITHUB_TOKEN }}        
+  
+      
+  # test:
+  #   needs: [pre-build, init-kosli]
+  #   uses: ./.github/workflows/test.yml
+  #   with:
+  #     AWS_ACCOUNT_ID: 772819027869
+  #     AWS_REGION: eu-central-1
+  #     FLOW_NAME: cli
+  #     TRAIL_NAME: ${{ needs.pre-build.outputs.trail_name }}
+  #     KOSLI_ORG: kosli-public
+  #   secrets:
+  #     github_access_token: ${{ secrets.KOSLI_GITHUB_TOKEN }}
+  #     gitlab_access_token: ${{ secrets.KOSLI_GITLAB_TOKEN }}
+  #     azure_access_token: ${{ secrets.KOSLI_AZURE_TOKEN }}
+  #     azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+  #     azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+  #     bitbucket_password: ${{ secrets.KOSLI_BITBUCKET_PASSWORD }}
+  #     jira_api_token: ${{ secrets.KOSLI_JIRA_API_TOKEN }}
+  #     slack_webhook: ${{ secrets.MERKELY_SLACK_CI_FAILURES_WEBHOOK }}
+  #     slack_channel: ${{ secrets.MERKELY_SLACK_CI_FAILURES_CHANNEL }}
+  #     snyk_token: ${{ secrets.SNYK_TOKEN }}
+  #     kosli_api_token: ${{ secrets.KOSLI_API_TOKEN }}
 
-  docker:
-    needs: [pre-build, test, init-kosli]
-    uses: ./.github/workflows/docker.yml
-    with:
-      tag: ${{ needs.pre-build.outputs.tag }}
-      platforms: linux/amd64
-      flow_name: cli
-      trail_name: ${{ needs.pre-build.outputs.trail_name }}
-      kosli_org: kosli-public
-    secrets:
-      slack_webhook: ${{ secrets.MERKELY_SLACK_CI_FAILURES_WEBHOOK }}
-      slack_channel: ${{ secrets.MERKELY_SLACK_CI_FAILURES_CHANNEL }} 
-      ghcr_user: ${{ secrets.GHCR_USER }}
-      ghcr_token: ${{ secrets.GHCR_TOKEN }}
-      kosli_api_token: ${{ secrets.KOSLI_API_TOKEN }}
-      snyk_token: ${{ secrets.SNYK_TOKEN }}
+  # docker:
+  #   needs: [pre-build, test, init-kosli]
+  #   uses: ./.github/workflows/docker.yml
+  #   with:
+  #     tag: ${{ needs.pre-build.outputs.tag }}
+  #     platforms: linux/amd64
+  #     flow_name: cli
+  #     trail_name: ${{ needs.pre-build.outputs.trail_name }}
+  #     kosli_org: kosli-public
+  #   secrets:
+  #     slack_webhook: ${{ secrets.MERKELY_SLACK_CI_FAILURES_WEBHOOK }}
+  #     slack_channel: ${{ secrets.MERKELY_SLACK_CI_FAILURES_CHANNEL }} 
+  #     ghcr_user: ${{ secrets.GHCR_USER }}
+  #     ghcr_token: ${{ secrets.GHCR_TOKEN }}
+  #     kosli_api_token: ${{ secrets.KOSLI_API_TOKEN }}
+  #     snyk_token: ${{ secrets.SNYK_TOKEN }}
